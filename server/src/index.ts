@@ -69,9 +69,9 @@ app.post("/api/users/fw-email", async (req, res) => {
     return;
   }
 
-  const isFreewheelEmail = /^[^\s@]+@freewheel\.[^\s@]+$/i.test(email);
-  if (!isFreewheelEmail) {
-    res.status(400).json({ ok: false, error: "email must be a valid FreeWheel address" });
+  const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/i.test(email);
+  if (!isValidEmail) {
+    res.status(400).json({ ok: false, error: "email must be a valid address" });
     return;
   }
 

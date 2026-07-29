@@ -600,10 +600,10 @@ export function App() {
     event.preventDefault();
 
     const normalizedEmail = fwEmail.trim().toLowerCase();
-    const isFreewheelEmail = /^[^\s@]+@freewheel\.[^\s@]+$/i.test(normalizedEmail);
+    const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/i.test(normalizedEmail);
 
-    if (!isFreewheelEmail) {
-      setFwEmailError("Please enter a valid FreeWheel email address.");
+    if (!isValidEmail) {
+      setFwEmailError("Please enter a valid email address.");
       return;
     }
 
@@ -846,9 +846,9 @@ export function App() {
         <div className="user-email-overlay" role="dialog" aria-modal="true" aria-labelledby="user-email-title">
           <div className="user-email-modal">
             <h2 id="user-email-title">Welcome to Office World</h2>
-            <p>Please enter your FreeWheel email</p>
+            <p>Please enter your email</p>
             <form onSubmit={submitFwEmail}>
-              <label htmlFor="fw-email-input">FreeWheel Email</label>
+              <label htmlFor="fw-email-input">Email</label>
               <input
                 ref={fwEmailInputRef}
                 id="fw-email-input"
@@ -862,7 +862,7 @@ export function App() {
                 onKeyDown={suppressModalKeyPropagation}
                 onKeyUpCapture={suppressModalKeyPropagation}
                 onKeyUp={suppressModalKeyPropagation}
-                placeholder="name@freewheel.com"
+                placeholder="name@example.com"
                 required
                 disabled={savingFwEmail}
               />
