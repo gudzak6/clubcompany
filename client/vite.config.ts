@@ -7,6 +7,11 @@ const normalizedBasePath = rawBasePath === "/" ? "/" : `/${rawBasePath.replace(/
 export default defineConfig({
   base: normalizedBasePath,
   plugins: [react()],
+  build: {
+    outDir: "../dist",
+    emptyOutDir: true,
+    chunkSizeWarningLimit: 3000
+  },
   server: {
     port: 5173,
     host: true,
