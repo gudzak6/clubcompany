@@ -226,6 +226,7 @@ export function App() {
   const [savingFwEmail, setSavingFwEmail] = useState(false);
   const [serverHealth, setServerHealth] = useState<"unknown" | "ok" | "failed">("unknown");
   const [serverHealthMessage, setServerHealthMessage] = useState("");
+  const [activeMobileTab, setActiveMobileTab] = useState<"player" | "coworkers">("player");
   const [showKeypad, setShowKeypad] = useState(() => {
     if (typeof window === "undefined") return false;
     return "ontouchstart" in window || (navigator.maxTouchPoints && navigator.maxTouchPoints > 0);
@@ -678,8 +679,24 @@ export function App() {
         <h1>Office World MVP</h1>
         <p>Phase 4: Authoritative multiplayer movement with Colyseus</p>
       </header>
+      <div className="mobile-panel-tabs" aria-label="Mobile panel tabs">
+        <button
+          type="button"
+          className={`panel-tab-btn ${activeMobileTab === "player" ? "active" : ""}`}
+          onClick={() => setActiveMobileTab("player")}
+        >
+          👤 Player Panel
+        </button>
+        <button
+          type="button"
+          className={`panel-tab-btn ${activeMobileTab === "coworkers" ? "active" : ""}`}
+          onClick={() => setActiveMobileTab("coworkers")}
+        >
+          👥 Coworkers ({debugState?.players.length ?? 0})
+        </button>
+      </div>
       <section className="content-grid">
-        <aside className="panel">
+        <aside className={`panel player-panel ${activeMobileTab !== "player" ? "mobile-hidden" : ""}`}>
           <h2>Player Panel</h2>
           <div className="progression-summary">
             <strong>Coins:</strong> {progression?.coins ?? 0}
@@ -912,7 +929,7 @@ export function App() {
             </div>
           ) : null}
         </div>
-        <aside className="panel">
+        <aside className={`panel coworkers-panel ${activeMobileTab !== "coworkers" ? "mobile-hidden" : ""}`}>
           <h2>Online Coworkers</h2>
           {!debugState || debugState.players.length === 0 ? (
             <ul>

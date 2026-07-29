@@ -385,8 +385,40 @@ body {
   transform: scale(0.95);
 }
 
+.mobile-panel-tabs {
+  display: none;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.panel-tab-btn {
+  flex: 1;
+  border: 1.5px solid rgba(255, 213, 128, 0.4);
+  border-radius: 10px;
+  background: rgba(17, 26, 46, 0.9);
+  color: #fff4cc;
+  font-weight: 600;
+  padding: 10px;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.panel-tab-btn.active {
+  background: linear-gradient(180deg, #2e3c63 0%, #1f2b49 100%);
+  border-color: #ffd580;
+  box-shadow: inset 0 -2px 0 #ffd580;
+}
+
 /* Responsive Mobile & Safari Media Queries */
 @media (max-width: 1024px) {
+  .mobile-panel-tabs {
+    display: flex;
+  }
+
+  .panel.mobile-hidden {
+    display: none;
+  }
+
   html, body {
     overflow-x: hidden;
     overflow-y: auto;
