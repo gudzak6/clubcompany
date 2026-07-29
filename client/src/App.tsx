@@ -816,6 +816,9 @@ export function App() {
                   onPointerUp={(e) => { e.preventDefault(); updateTouchDirection("up", false); }}
                   onPointerLeave={() => updateTouchDirection("up", false)}
                   onPointerCancel={() => updateTouchDirection("up", false)}
+                  onTouchStart={(e) => { e.preventDefault(); updateTouchDirection("up", true); }}
+                  onTouchEnd={(e) => { e.preventDefault(); updateTouchDirection("up", false); }}
+                  onTouchCancel={() => updateTouchDirection("up", false)}
                   aria-label="Move Up"
                 >
                   ▲
@@ -827,6 +830,9 @@ export function App() {
                   onPointerUp={(e) => { e.preventDefault(); updateTouchDirection("left", false); }}
                   onPointerLeave={() => updateTouchDirection("left", false)}
                   onPointerCancel={() => updateTouchDirection("left", false)}
+                  onTouchStart={(e) => { e.preventDefault(); updateTouchDirection("left", true); }}
+                  onTouchEnd={(e) => { e.preventDefault(); updateTouchDirection("left", false); }}
+                  onTouchCancel={() => updateTouchDirection("left", false)}
                   aria-label="Move Left"
                 >
                   ◀
@@ -839,6 +845,9 @@ export function App() {
                   onPointerUp={(e) => { e.preventDefault(); updateTouchDirection("right", false); }}
                   onPointerLeave={() => updateTouchDirection("right", false)}
                   onPointerCancel={() => updateTouchDirection("right", false)}
+                  onTouchStart={(e) => { e.preventDefault(); updateTouchDirection("right", true); }}
+                  onTouchEnd={(e) => { e.preventDefault(); updateTouchDirection("right", false); }}
+                  onTouchCancel={() => updateTouchDirection("right", false)}
                   aria-label="Move Right"
                 >
                   ▶
@@ -850,6 +859,9 @@ export function App() {
                   onPointerUp={(e) => { e.preventDefault(); updateTouchDirection("down", false); }}
                   onPointerLeave={() => updateTouchDirection("down", false)}
                   onPointerCancel={() => updateTouchDirection("down", false)}
+                  onTouchStart={(e) => { e.preventDefault(); updateTouchDirection("down", true); }}
+                  onTouchEnd={(e) => { e.preventDefault(); updateTouchDirection("down", false); }}
+                  onTouchCancel={() => updateTouchDirection("down", false)}
                   aria-label="Move Down"
                 >
                   ▼

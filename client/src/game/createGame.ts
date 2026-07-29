@@ -172,6 +172,7 @@ class OfficeScene extends Phaser.Scene {
   private wasInsideBadgeSwipeZone = false;
   private lastBadgeSwipeAttemptAt = 0;
   private inputBlockReason = "none";
+  private externalMoveIntent = { up: false, down: false, left: false, right: false };
   private suppressBrowserScrollKeys?: (event: KeyboardEvent) => void;
   private deskStatusBySlot = new Map<number, Phaser.GameObjects.Text>();
   private focusedOverlay: "shop" | "pet" | "desk" = "shop";
@@ -1176,6 +1177,12 @@ class OfficeScene extends Phaser.Scene {
 
     debugHost.officeWorldControls = {
       move: (intent) => {
+        this.externalMoveIntent = {
+          up: Boolean(intent?.up),
+          down: Boolean(intent?.down),
+          left: Boolean(intent?.left),
+          right: Boolean(intent?.right)
+        };
         this.sendRoomMessage("move", intent);
       },
       transitionTo: (roomId) => {
@@ -2153,10 +2160,10 @@ class OfficeScene extends Phaser.Scene {
     }
 
     const isComposingChat = this.chatSystem?.isComposing() ?? false;
-    const up = !isComposingChat && this.cursors.up.isDown;
-    const down = !isComposingChat && this.cursors.down.isDown;
-    const left = !isComposingChat && this.cursors.left.isDown;
-    const right = !isComposingChat && this.cursors.right.isDown;
+    const up = !isComposingChat && (this.cursors.up.isDown || this.externalMoveIntent.up);
+    const down = !isComposingChat && (this.cursors.down.isDown || this.externalMoveIntent.down);
+    const left = !isComposingChat && (this.cursors.left.isDown || this.externalMoveIntent.left);
+    const right = !isComposingChat && (this.cursors.right.isDown || this.externalMoveIntent.right);
 
     const intentSignature = `${Number(up)}${Number(down)}${Number(left)}${Number(right)}`;
 
