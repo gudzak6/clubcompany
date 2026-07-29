@@ -226,9 +226,24 @@ export function App() {
   const [savingFwEmail, setSavingFwEmail] = useState(false);
   const [serverHealth, setServerHealth] = useState<"unknown" | "ok" | "failed">("unknown");
   const [serverHealthMessage, setServerHealthMessage] = useState("");
+  const [touchDirs, setTouchDirs] = useState<{ up: boolean; down: boolean; left: boolean; right: boolean }>({
+    up: false,
+    down: false,
+    left: false,
+    right: false
+  });
 
   const hostWithControls = window as Window & {
     officeWorldControls?: OfficeWorldControls;
+  };
+
+  const updateTouchDirection = (dir: "up" | "down" | "left" | "right", active: boolean) => {
+    setTouchDirs((prev) => {
+      if (prev[dir] === active) return prev;
+      const next = { ...prev, [dir]: active };
+      hostWithControls.officeWorldControls?.move?.(next);
+      return next;
+    });
   };
 
   useEffect(() => {
@@ -782,6 +797,89 @@ export function App() {
         </aside>
         <div className="game-wrapper">
           <div ref={containerRef} className="game-canvas" />
+          <div className="mobile-keypad-bar" aria-label="Mobile Keypad Controls">
+            <div className="mobile-dpad">
+              <button
+                type="button"
+                className={`dpad-btn up ${touchDirs.up ? "active" : ""}`}
+                onPointerDown={(e) => { e.preventDefault(); updateTouchDirection("up", true); }}
+                onPointerUp={(e) => { e.preventDefault(); updateTouchDirection("up", false); }}
+                onPointerLeave={() => updateTouchDirection("up", false)}
+                onPointerCancel={() => updateTouchDirection("up", false)}
+                aria-label="Move Up"
+              >
+                ▲
+              </button>
+              <button
+                type="button"
+                className={`dpad-btn left ${touchDirs.left ? "active" : ""}`}
+                onPointerDown={(e) => { e.preventDefault(); updateTouchDirection("left", true); }}
+                onPointerUp={(e) => { e.preventDefault(); updateTouchDirection("left", false); }}
+                onPointerLeave={() => updateTouchDirection("left", false)}
+                onPointerCancel={() => updateTouchDirection("left", false)}
+                aria-label="Move Left"
+              >
+                ◀
+              </button>
+              <div className="dpad-btn center" />
+              <button
+                type="button"
+                className={`dpad-btn right ${touchDirs.right ? "active" : ""}`}
+                onPointerDown={(e) => { e.preventDefault(); updateTouchDirection("right", true); }}
+                onPointerUp={(e) => { e.preventDefault(); updateTouchDirection("right", false); }}
+                onPointerLeave={() => updateTouchDirection("right", false)}
+                onPointerCancel={() => updateTouchDirection("right", false)}
+                aria-label="Move Right"
+              >
+                ▶
+              </button>
+              <button
+                type="button"
+                className={`dpad-btn down ${touchDirs.down ? "active" : ""}`}
+                onPointerDown={(e) => { e.preventDefault(); updateTouchDirection("down", true); }}
+                onPointerUp={(e) => { e.preventDefault(); updateTouchDirection("down", false); }}
+                onPointerLeave={() => updateTouchDirection("down", false)}
+                onPointerCancel={() => updateTouchDirection("down", false)}
+                aria-label="Move Down"
+              >
+                ▼
+              </button>
+            </div>
+            <div className="mobile-action-buttons">
+              <button
+                type="button"
+                className="mobile-btn"
+                onClick={() => hostWithControls.officeWorldControls?.toggleDance?.()}
+              >
+                💃 Dance
+              </button>
+              <button
+                type="button"
+                className="mobile-btn"
+                onClick={() => hostWithControls.officeWorldControls?.emote?.("🎉")}
+              >
+                🎉 Emote
+              </button>
+              {debugState?.roomId === "rooftop" ? (
+                <button
+                  type="button"
+                  className="mobile-btn"
+                  onClick={() => hostWithControls.officeWorldControls?.joinPong?.()}
+                >
+                  🏓 Pong
+                </button>
+              ) : null}
+              {debugState?.roomId && debugState.roomId !== "main_office" ? (
+                <button
+                  type="button"
+                  className="mobile-btn"
+                  onClick={leaveCurrentRoom}
+                >
+                  🚪 Leave
+                </button>
+              ) : null}
+            </div>
+          </div>
         </div>
         <aside className="panel">
           <h2>Online Coworkers</h2>
