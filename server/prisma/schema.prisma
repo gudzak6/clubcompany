@@ -1,0 +1,327 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum FriendshipStatus {
+  pending
+  accepted
+  declined
+}
+
+enum PresenceStatus {
+  active
+  away
+  offline
+}
+
+enum OfficeVisibility {
+  open
+  friends_only
+  private
+}
+
+enum ItemCategory {
+  clothing
+  hats
+  desk_items
+  office_decorations
+  pet_accessories
+}
+
+enum Rarity {
+  common
+  uncommon
+  rare
+  epic
+  legendary
+}
+
+model User {
+  id            String   @id @default(cuid())
+  playerId      String   @unique
+  fwEmail       String?  @unique
+  displayName   String
+  department    String
+  level         Int      @default(1)
+  xpBalance     Int      @default(0)
+  coinBalance   Int      @default(0)
+  lastSpinAt    DateTime?
+  lastBadgeSwipeAt DateTime?
+  dailyStreak   Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  avatar            Avatar?
+  desk              Desk?
+  personalOffice    PersonalOffice?
+  userItems         UserItem[]
+  sentFriendships   Friendship[]     @relation("friendship_sender")
+  recvFriendships   Friendship[]     @relation("friendship_receiver")
+  gameSessions      GameSession[]
+  coinTransactions  CoinTransaction[]
+  xpTransactions    XpTransaction[]
+  userDailyTasks    UserDailyTask[]
+  playerSessions    PlayerSession[]
+  moderationLogs    ModerationLog[]
+
+  @@index([displayName])
+  @@index([department])
+}
+
+model Avatar {
+  id             String   @id @default(cuid())
+  userId         String   @unique
+  bodyColor      String
+  hairOrHatStyle String
+  shirtStyle     String
+  starterPet     String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Room {
+  id          String   @id @default(cuid())
+  key         String   @unique
+  name        String
+  mapKey      String
+  widthTiles  Int
+  heightTiles Int
+  isLocked    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  desks          Desk[]
+  gameSessions   GameSession[]
+  moderationLogs ModerationLog[]
+
+  @@index([isLocked])
+}
+
+model Desk {
+  id              String   @id @default(cuid())
+  userId          String   @unique
+  roomId          String
+  slotIndex       Int
+  deskStyle       String   @default("starter_desk")
+  chair           String   @default("starter_chair")
+  computer        String   @default("starter_computer")
+  plant           String   @default("starter_plant")
+  mug             String   @default("starter_mug")
+  smallDecoration String   @default("starter_decor")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  room Room @relation(fields: [roomId], references: [id], onDelete: Cascade)
+
+  @@unique([roomId, slotIndex])
+}
+
+model PersonalOffice {
+  id                    String           @id @default(cuid())
+  userId                String           @unique
+  visibility            OfficeVisibility @default(open)
+  wallpaper             String           @default("starter_wallpaper")
+  flooring              String           @default("starter_flooring")
+  deskSlot              String           @default("starter_desk")
+  chairSlot             String           @default("starter_chair")
+  wallDecorationSlot1   String?
+  wallDecorationSlot2   String?
+  wallDecorationSlot3   String?
+  floorDecorationSlot1  String?
+  floorDecorationSlot2  String?
+  floorDecorationSlot3  String?
+  trophyShelf           String?          @default("starter_trophy_shelf")
+  petArea               String?          @default("starter_pet_area")
+  createdAt             DateTime         @default(now())
+  updatedAt             DateTime         @updatedAt
+
+  user                 User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  decorationPlacements DecorationPlacement[]
+}
+
+model DecorationPlacement {
+  id           String   @id @default(cuid())
+  officeId     String
+  slotKey      String
+  itemCatalogId String
+  createdAt    DateTime @default(now())
+
+  office      PersonalOffice @relation(fields: [officeId], references: [id], onDelete: Cascade)
+  itemCatalog ItemCatalog    @relation(fields: [itemCatalogId], references: [id], onDelete: Restrict)
+
+  @@unique([officeId, slotKey])
+  @@index([itemCatalogId])
+}
+
+model ItemCatalog {
+  id            String       @id @default(cuid())
+  key           String       @unique
+  name          String
+  category      ItemCategory
+  price         Int
+  requiredLevel Int          @default(1)
+  rarity        Rarity       @default(common)
+  spriteKey     String
+  previewImage  String
+  active        Boolean      @default(true)
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  userItems             UserItem[]
+  decorationPlacements  DecorationPlacement[]
+
+  @@index([category])
+  @@index([requiredLevel])
+}
+
+model UserItem {
+  id            String   @id @default(cuid())
+  userId        String
+  itemCatalogId String
+  quantity      Int      @default(1)
+  isEquipped    Boolean  @default(false)
+  equippedSlot  String?
+  createdAt     DateTime @default(now())
+
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  itemCatalog ItemCatalog @relation(fields: [itemCatalogId], references: [id], onDelete: Restrict)
+
+  @@unique([userId, itemCatalogId])
+  @@index([userId, isEquipped])
+}
+
+model Friendship {
+  id         String           @id @default(cuid())
+  requesterId String
+  addresseeId String
+  status     FriendshipStatus @default(pending)
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @updatedAt
+
+  requester User @relation("friendship_sender", fields: [requesterId], references: [id], onDelete: Cascade)
+  addressee User @relation("friendship_receiver", fields: [addresseeId], references: [id], onDelete: Cascade)
+
+  @@unique([requesterId, addresseeId])
+  @@index([status])
+}
+
+model GameSession {
+  id          String   @id @default(cuid())
+  userId      String
+  roomId      String?
+  sessionType String
+  score       Int      @default(0)
+  metadata    Json?
+  startedAt   DateTime @default(now())
+  endedAt     DateTime?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  room Room? @relation(fields: [roomId], references: [id], onDelete: SetNull)
+
+  @@index([sessionType])
+  @@index([startedAt])
+}
+
+model CoinTransaction {
+  id           String   @id @default(cuid())
+  userId       String
+  amount       Int
+  reason       String
+  sourceType   String
+  sourceRefId  String?
+  balanceAfter Int
+  metadata     Json?
+  createdAt    DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+  @@index([sourceType, sourceRefId])
+}
+
+model XpTransaction {
+  id           String   @id @default(cuid())
+  userId       String
+  amount       Int
+  reason       String
+  sourceType   String
+  sourceRefId  String?
+  balanceAfter Int
+  metadata     Json?
+  createdAt    DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+  @@index([sourceType, sourceRefId])
+}
+
+model DailyTask {
+  id              String   @id @default(cuid())
+  key             String   @unique
+  description     String
+  targetCount     Int      @default(1)
+  rewardCoins     Int
+  rewardXp        Int
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  userDailyTasks UserDailyTask[]
+
+  @@index([isActive])
+}
+
+model UserDailyTask {
+  id           String   @id @default(cuid())
+  userId       String
+  taskId       String
+  dateKey      String
+  progress     Int      @default(0)
+  completedAt  DateTime?
+  claimedAt    DateTime?
+  createdAt    DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  task DailyTask @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, taskId, dateKey])
+  @@index([userId, dateKey])
+}
+
+model PlayerSession {
+  id            String         @id @default(cuid())
+  userId        String
+  sessionId     String         @unique
+  status        PresenceStatus @default(active)
+  lastSeenAt    DateTime       @default(now())
+  connectedAt   DateTime       @default(now())
+  disconnectedAt DateTime?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([status])
+  @@index([lastSeenAt])
+}
+
+model ModerationLog {
+  id          String   @id @default(cuid())
+  userId      String?
+  roomId      String?
+  message     String
+  action      String
+  createdAt   DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+  room Room? @relation(fields: [roomId], references: [id], onDelete: SetNull)
+
+  @@index([createdAt])
+  @@index([action])
+}

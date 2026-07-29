@@ -1,0 +1,307 @@
+:root {
+  font-family: "Trebuchet MS", "Verdana", sans-serif;
+  color: #fef6d8;
+  background-color: #16213d;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 20% 10%, rgba(255, 184, 108, 0.18), transparent 35%),
+    radial-gradient(circle at 80% 30%, rgba(89, 184, 255, 0.16), transparent 30%),
+    #16213d;
+}
+
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  height: 100vh;
+  padding: 16px;
+  overflow: hidden;
+}
+
+.top-bar {
+  background: rgba(17, 26, 46, 0.85);
+  border: 2px solid #fef6d8;
+  border-radius: 16px;
+  padding: 14px 16px;
+}
+
+.top-bar h1 {
+  margin: 0;
+  font-size: 1.8rem;
+}
+
+.top-bar p {
+  margin: 8px 0 0;
+  color: #ffe9a8;
+}
+
+.content-grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: 240px 1fr 240px;
+  flex: 1;
+  min-height: 0;
+}
+
+.panel {
+  background: rgba(17, 26, 46, 0.88);
+  border: 2px solid #fef6d8;
+  border-radius: 16px;
+  padding: 14px;
+  overflow: auto;
+}
+
+.panel h2 {
+  margin-top: 0;
+}
+
+.backend-warning {
+  margin-top: 10px;
+  padding: 10px;
+  border: 1px solid #fca5a5;
+  border-radius: 10px;
+  background: rgba(127, 29, 29, 0.35);
+  color: #fee2e2;
+  font-size: 0.9rem;
+  line-height: 1.35;
+}
+
+.progression-summary {
+  margin-bottom: 10px;
+  padding: 8px;
+  border: 1px solid rgba(254, 246, 216, 0.35);
+  border-radius: 10px;
+  background: rgba(13, 23, 41, 0.65);
+  font-size: 0.92rem;
+}
+
+.progression-actions {
+  display: grid;
+  gap: 8px;
+  margin: 10px 0;
+}
+
+.progression-actions button,
+.shop-list button,
+.pet-picker select,
+.desk-modal select {
+  border: 1px solid #ffd580;
+  border-radius: 8px;
+  background: #1f2b49;
+  color: #fff4cc;
+  padding: 7px 8px;
+}
+
+.spin-result {
+  margin: 10px 0;
+  padding: 8px;
+  border: 1px solid #67e8f9;
+  border-radius: 10px;
+  background: rgba(8, 47, 73, 0.35);
+}
+
+.pet-picker {
+  margin-top: 10px;
+}
+
+.pet-picker h3,
+.shop-list h3,
+.desk-modal h3 {
+  margin: 0 0 8px;
+  font-size: 0.98rem;
+}
+
+.desk-modal {
+  margin-top: 10px;
+  padding: 10px;
+  border: 1px solid rgba(254, 246, 216, 0.45);
+  border-radius: 12px;
+  background: rgba(6, 12, 24, 0.78);
+  display: grid;
+  gap: 8px;
+}
+
+.desk-modal label {
+  display: grid;
+  gap: 4px;
+  font-size: 0.85rem;
+}
+
+.shop-list {
+  margin-top: 10px;
+  max-height: 240px;
+  overflow: auto;
+}
+
+.shop-list ul {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.shop-list li {
+  margin-bottom: 8px;
+  display: grid;
+  gap: 4px;
+}
+
+.spin-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(3, 8, 20, 0.72);
+  display: grid;
+  place-items: center;
+  z-index: 2000;
+}
+
+.spin-overlay-panel {
+  width: min(92vw, 420px);
+  border: 2px solid #fef6d8;
+  border-radius: 16px;
+  background: linear-gradient(180deg, #1f2b49 0%, #10192f 100%);
+  color: #fff4cc;
+  padding: 16px;
+  text-align: center;
+}
+
+.wheel-face,
+.wheel-result {
+  margin: 14px 0;
+  padding: 14px;
+  border-radius: 12px;
+  border: 1px solid #67e8f9;
+  background: rgba(8, 47, 73, 0.35);
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.spin-overlay-panel button {
+  border: 1px solid #ffd580;
+  border-radius: 10px;
+  background: #1f2b49;
+  color: #fff4cc;
+  padding: 8px 14px;
+}
+
+.room-help-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.room-help-actions button {
+  flex: 1;
+  border: 1px solid #ffd580;
+  border-radius: 10px;
+  background: linear-gradient(180deg, #2e3c63 0%, #1f2b49 100%);
+  color: #fff4cc;
+  font-weight: 600;
+  padding: 8px 10px;
+  cursor: pointer;
+}
+
+.user-email-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(3, 8, 20, 0.78);
+  display: grid;
+  place-items: center;
+  z-index: 2500;
+}
+
+.user-email-modal {
+  width: min(92vw, 420px);
+  border: 2px solid #fef6d8;
+  border-radius: 16px;
+  background: linear-gradient(180deg, #1f2b49 0%, #10192f 100%);
+  color: #fff4cc;
+  padding: 18px;
+}
+
+.user-email-modal h2 {
+  margin: 0;
+}
+
+.user-email-modal p {
+  margin: 10px 0 14px;
+}
+
+.user-email-modal form {
+  display: grid;
+  gap: 10px;
+}
+
+.user-email-modal label {
+  font-size: 0.9rem;
+}
+
+.user-email-modal input {
+  border: 1px solid #ffd580;
+  border-radius: 10px;
+  background: #0f1a34;
+  color: #fff4cc;
+  padding: 10px;
+}
+
+.user-email-modal button {
+  border: 1px solid #ffd580;
+  border-radius: 10px;
+  background: linear-gradient(180deg, #2e3c63 0%, #1f2b49 100%);
+  color: #fff4cc;
+  font-weight: 600;
+  padding: 10px 12px;
+  cursor: pointer;
+}
+
+.user-email-error {
+  margin: 0;
+  color: #fecaca;
+  font-size: 0.88rem;
+}
+
+.room-help-actions button:hover {
+  background: linear-gradient(180deg, #3a4d7d 0%, #26355b 100%);
+}
+
+.game-wrapper {
+  background: rgba(12, 20, 36, 0.88);
+  border: 2px solid #fef6d8;
+  border-radius: 16px;
+  padding: 10px;
+  height: 100%;
+  min-height: 0;
+}
+
+.game-canvas {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+
+@media (max-width: 1100px) {
+  .content-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .game-wrapper {
+    min-height: 0;
+  }
+
+  .game-canvas {
+    min-height: 0;
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "name": "office-world",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": [
+    "client",
+    "server",
+    "shared"
+  ],
+  "scripts": {
+    "dev": "concurrently -n SERVER,CLIENT -c cyan,magenta \"npm run dev:server\" \"npm run dev:client\"",
+    "dev:client": "npm --workspace client run dev",
+    "dev:server": "npm --workspace server run dev",
+    "build:client": "cd client && vite build",
+    "build:server": "tsc -p server/tsconfig.json",
+    "start": "npm run build:client && npm run build:server && node --experimental-specifier-resolution=node server/dist/index.js",
+    "start:spa": "serve -s dist -l tcp://0.0.0.0:${PORT:-3000}",
+    "build": "npm run build --workspaces",
+    "typecheck": "npm run typecheck --workspaces",
+    "env:server:local": "cp server/.env.local.example server/.env",
+    "env:server:neon": "echo \"Set server/.env manually to your Neon DATABASE_URL\"",
+    "db:local:start": "brew services start postgresql@16 || brew services start postgresql",
+    "db:up": "docker compose up -d postgres",
+    "db:down": "docker compose down",
+    "db:logs": "docker compose logs -f postgres"
+  },
+  "dependencies": {
+    "@colyseus/schema": "^3.0.35",
+    "@colyseus/ws-transport": "^0.16.5",
+    "@vitejs/plugin-react": "^4.3.1",
+    "colyseus": "^0.16.5",
+    "colyseus.js": "^0.16.11",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.0",
+    "phaser": "^3.90.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "tsx": "^4.19.1",
+    "vite": "^5.4.3"
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.1",
+    "typescript": "^5.6.2"
+  },
+  "engines": {
+    "node": ">=20.10.0"
+  }
+}
